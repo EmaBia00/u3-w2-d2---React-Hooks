@@ -5,31 +5,25 @@ import Welcome from "./components/Welcome";
 import MyFooter from "./components/MyFooter";
 import BookList from "./components/BookList";
 import fantasyBooks from "./data/fantasy.json";
-import { Component } from "react";
+import { useState } from "react";
 
-class App extends Component {
-  state = {
-    selectedBookAsin: null
+function App() {
+  const [selectedBookAsin, setSelectedBookAsin] = useState(null);
+
+  const handleBookSelect = (asin) => {
+    setSelectedBookAsin((prevAsin) => (prevAsin === asin ? null : asin));
   };
 
-  handleBookSelect = (asin) => {
-    this.setState((prevState) => ({
-      selectedBookAsin: prevState.selectedBookAsin === asin ? null : asin
-    }));
-  };
-
-  render() {
-    return (
-      <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
-        <div className="flex-grow-1">
-          <MyNav />
-          <Welcome />
-          <BookList books={fantasyBooks} selectedBookAsin={this.state.selectedBookAsin} onBookSelect={this.handleBookSelect} />
-        </div>
-        <MyFooter />
+  return (
+    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
+      <div className="flex-grow-1">
+        <MyNav />
+        <Welcome />
+        <BookList books={fantasyBooks} selectedBookAsin={selectedBookAsin} onBookSelect={handleBookSelect} />
       </div>
-    );
-  }
+      <MyFooter />
+    </div>
+  );
 }
 
 export default App;

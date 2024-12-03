@@ -1,20 +1,21 @@
-import { Component } from "react";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
-class AddComment extends Component {
-  state = {
-    comment: "",
-    rate: 1
+const AddComment = ({ asin, onCommentAdded }) => {
+  const [comment, setComment] = useState("");
+  const [rate, setRate] = useState(1);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "comment") {
+      setComment(value);
+    } else if (name === "rate") {
+      setRate(Number(value));
+    }
   };
 
-  handleInputChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { comment, rate } = this.state;
-    const { asin, onCommentAdded } = this.props;
 
     const newComment = {
       comment,
@@ -33,32 +34,31 @@ class AddComment extends Component {
         body: JSON.stringify(newComment)
       });
 
-      this.setState({ comment: "", rate: 1 });
+      setComment("");
+      setRate(1);
       onCommentAdded();
     } catch (error) {
       console.error("Error posting comment:", error);
     }
   };
 
-  render() {
-    return (
-      <Form className="border border-1 p-3 mt-2 rounded" onSubmit={this.handleSubmit}>
-        <Form.Group className="mb-3" controlId="comment">
-          <Form.Label>Your Comment</Form.Label>
-          <Form.Control type="text" name="comment" value={this.state.comment} onChange={this.handleInputChange} placeholder="Write your comment" />
-        </Form.Group>
+  return (
+    <Form className="border border-1 p-3 mt-2 rounded" onSubmit={handleSubmit}>
+      <Form.Group className="mb-3" controlId="comment">
+        <Form.Label>Your Comment</Form.Label>
+        <Form.Control type="text" name="comment" value={comment} onChange={handleInputChange} placeholder="Write your comment" />
+      </Form.Group>
 
-        <Form.Group className="mb-3" controlId="rate">
-          <Form.Label>Rate (1 to 5)</Form.Label>
-          <Form.Control type="number" name="rate" value={this.state.rate} onChange={this.handleInputChange} min="1" max="5" />
-        </Form.Group>
+      <Form.Group className="mb-3" controlId="rate">
+        <Form.Label>Rate (1 to 5)</Form.Label>
+        <Form.Control type="number" name="rate" value={rate} onChange={handleInputChange} min="1" max="5" />
+      </Form.Group>
 
-        <Button className="mb-3" type="submit">
-          Add Comment
-        </Button>
-      </Form>
-    );
-  }
-}
+      <Button className="mb-3" type="submit">
+        Add Comment
+      </Button>
+    </Form>
+  );
+};
 
 export default AddComment;
